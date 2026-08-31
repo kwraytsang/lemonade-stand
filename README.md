@@ -16,7 +16,7 @@ Before you start, make sure you have these tools:
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/) (recommended). Use it to run the backend and the database.
 - Xcode (Mac only). Use it for the iOS Simulator. See the note below about why this is the tested path.
 
-**Note:** The client depends on `expo-dev-client`. Because of this, the client needs a custom development build. The client will **not** run inside the plain [Expo Go](https://expo.dev/go) app.
+**Note:** The client will **not** run in the plain [Expo Go](https://expo.dev/go) app. Use `npm run ios` to build and launch it on the iOS Simulator; see [Frontend (`client/`)](#frontend-client) below.
 
 ## Backend (`server/`)
 
@@ -228,7 +228,7 @@ npm run ios             # first run: builds a custom dev client and launches the
 Use `npm run ios` (`expo run:ios`). This is the tested and recommended path.
 
 - On the iOS Simulator: the default value, `http://localhost:3000/api/v1`, works with no change.
-- On a physical device, running its own dev-client build: use your machine's LAN IP instead.
+- On a physical device, running its own dev-client build: use machine's LAN IP instead.
 
 ### Frontend tests
 
@@ -243,7 +243,7 @@ npm test
 2. **The admin routes (`/admin/*`) are public on purpose.** They have no login, no API key, and no role system in front of them. This choice keeps catalog management easy to test. A production setup should add real permission control in front of these routes.
 3. **The seed script (`npm run seed` in `server/`).** It uses the same admin services as the API, rather than inserting rows directly, so the seeded data goes through the same validation as a normal API call. You can also create beverage types and sizes by hand, through the admin API (see above).
 4. **Postgres stores prices as `decimal` columns, as strings.** This avoids floating-point rounding issues with money. The client converts each price to a `number` at the API boundary, for display and for arithmetic.
-5. **The server never accepts `totalPrice` as client input.** `POST /customer/orders` only accepts `beverageTypeId`, `sizeId`, and `quantity` for each line item. The server looks up each size's current price in the database and computes the total itself. The order record, and the API response, do include a `totalPrice` field — this satisfies the requirement that an order include a total order price. The server computes this total rather than trusting one from the client, since a client-supplied total would let anyone submit an arbitrary price for an order. The client still computes and displays a running total locally, as the cart is built, purely for the user interface; the server ignores that local figure and computes its own authoritative total at submission time.
+5. **The client never sends a price to the server — there's no need to.** `POST /customer/orders` only accepts `beverageTypeId`, `sizeId`, and `quantity` for each line item; the DTO has no `price`/`totalPrice` field at all, so there's nothing for the client to send. The server looks up each size's current price in the database and computes `unitPrice` and `totalPrice` itself. The client still computes and displays a running total locally, as the cart is built, purely for the user interface; that figure never leaves the device, and the server computes its own authoritative total at submission time.
 6. **Confirmation numbers.** Each number has the prefix `LM-`, followed by a random 6-digit number. The server checks each number against existing orders to make sure it is unique, and retries a few times before giving up.
 7. **The cart state lives only in memory** (React Context) and is not saved to device storage. Because of this, a reload or an app restart clears the in-progress order. Submitted orders, of course, are persisted server-side.
 8. **The customer picks a contact method, phone or email, with a toggle.** The validation, on both the client and the server, adapts to the selected method.
