@@ -42,7 +42,9 @@ describe('fetchBeverageTypes', () => {
   });
 
   it('maps a null description to undefined', async () => {
-    mockedGet.mockResolvedValue([{ id: '1', name: 'Seasonal Special', description: null, sizes: [] }]);
+    mockedGet.mockResolvedValue([
+      { id: '1', name: 'Seasonal Special', description: null, sizes: [] },
+    ]);
 
     const [result] = await fetchBeverageTypes();
 
@@ -50,7 +52,9 @@ describe('fetchBeverageTypes', () => {
   });
 
   it('preserves a beverage type with no sizes as an empty array', async () => {
-    mockedGet.mockResolvedValue([{ id: '1', name: 'Seasonal Special', description: null, sizes: [] }]);
+    mockedGet.mockResolvedValue([
+      { id: '1', name: 'Seasonal Special', description: null, sizes: [] },
+    ]);
 
     const [result] = await fetchBeverageTypes();
 

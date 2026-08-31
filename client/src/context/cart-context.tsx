@@ -16,7 +16,11 @@ import { CartItem, ContactMethod } from '@/types/order';
 type CartContextValue = {
   items: CartItem[];
   addItem: (item: Omit<CartItem, 'quantity'>, quantity: number) => void;
-  updateQuantity: (beverageId: string, sizeId: string, quantity: number) => void;
+  updateQuantity: (
+    beverageId: string,
+    sizeId: string,
+    quantity: number,
+  ) => void;
   removeItem: (beverageId: string, sizeId: string) => void;
   total: number;
 
@@ -54,16 +58,26 @@ function lineKey(beverageId: string, sizeId: string) {
 
 type CartItemsAction =
   | { type: 'add'; item: Omit<CartItem, 'quantity'>; quantity: number }
-  | { type: 'update-quantity'; beverageId: string; sizeId: string; quantity: number }
+  | {
+      type: 'update-quantity';
+      beverageId: string;
+      sizeId: string;
+      quantity: number;
+    }
   | { type: 'remove'; beverageId: string; sizeId: string }
   | { type: 'clear' };
 
 /** Pure line-item transitions, kept separate from React so each case is easy to follow in isolation. */
-function cartItemsReducer(items: CartItem[], action: CartItemsAction): CartItem[] {
+function cartItemsReducer(
+  items: CartItem[],
+  action: CartItemsAction,
+): CartItem[] {
   switch (action.type) {
     case 'add': {
       const key = lineKey(action.item.beverageId, action.item.sizeId);
-      const existing = items.find((line) => lineKey(line.beverageId, line.sizeId) === key);
+      const existing = items.find(
+        (line) => lineKey(line.beverageId, line.sizeId) === key,
+      );
       if (existing) {
         return items.map((line) =>
           lineKey(line.beverageId, line.sizeId) === key
@@ -76,15 +90,21 @@ function cartItemsReducer(items: CartItem[], action: CartItemsAction): CartItem[
     case 'update-quantity': {
       const key = lineKey(action.beverageId, action.sizeId);
       if (action.quantity <= 0) {
-        return items.filter((line) => lineKey(line.beverageId, line.sizeId) !== key);
+        return items.filter(
+          (line) => lineKey(line.beverageId, line.sizeId) !== key,
+        );
       }
       return items.map((line) =>
-        lineKey(line.beverageId, line.sizeId) === key ? { ...line, quantity: action.quantity } : line,
+        lineKey(line.beverageId, line.sizeId) === key
+          ? { ...line, quantity: action.quantity }
+          : line,
       );
     }
     case 'remove': {
       const key = lineKey(action.beverageId, action.sizeId);
-      return items.filter((line) => lineKey(line.beverageId, line.sizeId) !== key);
+      return items.filter(
+        (line) => lineKey(line.beverageId, line.sizeId) !== key,
+      );
     }
     case 'clear':
       return [];
@@ -95,7 +115,9 @@ type PlaceOrderInput = Parameters<typeof submitOrder>[0];
 
 /** Wraps the submit-order mutation with the confirmation/error state the checkout flow needs. */
 function useOrderSubmission() {
-  const [confirmationNumber, setConfirmationNumber] = useState<string | null>(null);
+  const [confirmationNumber, setConfirmationNumber] = useState<string | null>(
+    null,
+  );
   const [submitError, setSubmitError] = useState<string | null>(null);
   const mutation = useMutation({ mutationFn: submitOrder });
 
@@ -108,7 +130,9 @@ function useOrderSubmission() {
         return result.confirmationNumber;
       } catch (err) {
         setSubmitError(
-          err instanceof ApiError ? err.message : 'Something went wrong placing your order. Please try again.',
+          err instanceof ApiError
+            ? err.message
+            : 'Something went wrong placing your order. Please try again.',
         );
         return null;
       }
@@ -122,13 +146,21 @@ function useOrderSubmission() {
     mutation.reset();
   }, [mutation]);
 
-  return { confirmationNumber, submitting: mutation.isPending, submitError, submit, reset };
+  return {
+    confirmationNumber,
+    submitting: mutation.isPending,
+    submitError,
+    submit,
+    reset,
+  };
 }
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, dispatch] = useReducer(cartItemsReducer, []);
 
-  const [contactDetails, setContactDetailsState] = useState<ContactDetails>(DEFAULT_CONTACT_DETAILS);
+  const [contactDetails, setContactDetailsState] = useState<ContactDetails>(
+    DEFAULT_CONTACT_DETAILS,
+  );
   const { customerName, contactMethod, customerContact } = contactDetails;
 
   const orderSubmission = useOrderSubmission();
@@ -137,13 +169,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
     dispatch({ type: 'add', item, quantity });
   }, []);
 
-  const updateQuantity: CartContextValue['updateQuantity'] = useCallback((beverageId, sizeId, quantity) => {
-    dispatch({ type: 'update-quantity', beverageId, sizeId, quantity });
-  }, []);
+  const updateQuantity: CartContextValue['updateQuantity'] = useCallback(
+    (beverageId, sizeId, quantity) => {
+      dispatch({ type: 'update-quantity', beverageId, sizeId, quantity });
+    },
+    [],
+  );
 
-  const removeItem: CartContextValue['removeItem'] = useCallback((beverageId, sizeId) => {
-    dispatch({ type: 'remove', beverageId, sizeId });
-  }, []);
+  const removeItem: CartContextValue['removeItem'] = useCallback(
+    (beverageId, sizeId) => {
+      dispatch({ type: 'remove', beverageId, sizeId });
+    },
+    [],
+  );
 
   const total = useMemo(
     () => items.reduce((sum, line) => sum + line.unitPrice * line.quantity, 0),

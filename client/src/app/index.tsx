@@ -18,7 +18,9 @@ import { BeverageType } from '@/types/beverage';
 export default function MenuScreen() {
   const { beverages, loading, refreshing, error, refetch } = useBeverages();
   const { items, total } = useCart();
-  const [selectedBeverage, setSelectedBeverage] = useState<BeverageType | null>(null);
+  const [selectedBeverage, setSelectedBeverage] = useState<BeverageType | null>(
+    null,
+  );
 
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -30,7 +32,8 @@ export default function MenuScreen() {
           <ThemedView className="px-4 pt-2">
             <Pressable
               onPress={() => router.push('/cart')}
-              className="flex-row items-center justify-between rounded-2xl bg-accent px-4 py-4">
+              className="flex-row items-center justify-between rounded-2xl bg-accent px-4 py-4"
+            >
               <ThemedText type="smallBold" themeColor="accent-foreground">
                 View order · {itemCount}
               </ThemedText>
@@ -40,17 +43,26 @@ export default function MenuScreen() {
             </Pressable>
           </ThemedView>
         ) : null
-      }>
+      }
+    >
       <Stack.Screen options={{ headerRight: () => <CartButton /> }} />
       {loading ? (
         <LoadingState />
       ) : error ? (
         <EmptyState
-          icon={{ ios: 'exclamationmark.triangle', android: 'error_outline', web: 'error_outline' }}
+          icon={{
+            ios: 'exclamationmark.triangle',
+            android: 'error_outline',
+            web: 'error_outline',
+          }}
           title={error}
           titleColor="destructive"
           actionLabel="Try again"
-          actionIcon={{ ios: 'arrow.clockwise', android: 'refresh', web: 'refresh' }}
+          actionIcon={{
+            ios: 'arrow.clockwise',
+            android: 'refresh',
+            web: 'refresh',
+          }}
           onAction={() => {
             console.log('TRY_AGAIN_PRESSED_DEBUG');
             refetch();
@@ -60,7 +72,9 @@ export default function MenuScreen() {
         <FlatList
           data={beverages}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <BeverageRow beverage={item} onSelect={setSelectedBeverage} />}
+          renderItem={({ item }) => (
+            <BeverageRow beverage={item} onSelect={setSelectedBeverage} />
+          )}
           ListHeaderComponent={
             <ThemedView className="mb-2 gap-1">
               <ThemedText type="eyebrow" themeColor="foreground-secondary">
@@ -70,18 +84,31 @@ export default function MenuScreen() {
             </ThemedView>
           }
           ListEmptyComponent={
-            <EmptyState title="No drinks on the menu right now." message="Check back soon, or pull down to refresh." />
+            <EmptyState
+              title="No drinks on the menu right now."
+              message="Check back soon, or pull down to refresh."
+            />
           }
-          contentContainerStyle={{ paddingBottom: BottomTabInset + 16, flexGrow: 1 }}
+          contentContainerStyle={{
+            paddingBottom: BottomTabInset + 16,
+            flexGrow: 1,
+          }}
           contentContainerClassName="gap-4 px-4 pt-4"
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={() => refetch()} tintColorClassName="accent-foreground" />
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={() => refetch()}
+              tintColorClassName="accent-foreground"
+            />
           }
         />
       )}
 
       {selectedBeverage ? (
-        <BeverageDetailModal beverage={selectedBeverage} onClose={() => setSelectedBeverage(null)} />
+        <BeverageDetailModal
+          beverage={selectedBeverage}
+          onClose={() => setSelectedBeverage(null)}
+        />
       ) : null}
     </ScreenLayout>
   );

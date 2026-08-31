@@ -29,6 +29,8 @@ function toBeverageType(raw: RawBeverageType): BeverageType {
 }
 
 export async function fetchBeverageTypes(): Promise<BeverageType[]> {
-  const raw = await apiClient.get<RawBeverageType[]>('/customer/beverage-types');
+  const raw = await apiClient.get<RawBeverageType[]>(
+    '/customer/beverage-types',
+  );
   return raw.map(toBeverageType);
 }

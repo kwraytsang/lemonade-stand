@@ -25,7 +25,9 @@ export function BeverageDetailModal({
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
   const insets = useSafeAreaInsets();
 
-  const selectedSize = beverage.sizes.find((size) => size.id === selectedSizeId);
+  const selectedSize = beverage.sizes.find(
+    (size) => size.id === selectedSizeId,
+  );
 
   const handleAdd = () => {
     if (!selectedSize) return;
@@ -47,7 +49,8 @@ export function BeverageDetailModal({
       <Pressable className="absolute inset-0 bg-black/40" onPress={onClose} />
       <ThemedView
         className="absolute inset-x-0 bottom-0 gap-2 rounded-t-[32px] px-4 pt-4"
-        style={{ paddingBottom: insets.bottom + 16 }}>
+        style={{ paddingBottom: insets.bottom + 16 }}
+      >
         <ThemedView className="mb-2 flex-row items-start justify-between">
           <ThemedView className="flex-1 gap-0.5 pr-4">
             <ThemedText type="subtitle">{beverage.name}</ThemedText>
@@ -73,14 +76,26 @@ export function BeverageDetailModal({
           {beverage.sizes.map((size) => {
             const selected = size.id === selectedSizeId;
             return (
-              <Pressable key={size.id} onPress={() => setSelectedSizeId(size.id)}>
+              <Pressable
+                key={size.id}
+                onPress={() => setSelectedSizeId(size.id)}
+              >
                 <ThemedView
                   type={selected ? 'accent' : 'background'}
-                  className="flex-row items-center justify-between rounded-2xl border border-border px-4 py-4">
-                  <ThemedText type="smallBold" themeColor={selected ? 'accent-foreground' : 'foreground'}>
+                  className="flex-row items-center justify-between rounded-2xl border border-border px-4 py-4"
+                >
+                  <ThemedText
+                    type="smallBold"
+                    themeColor={selected ? 'accent-foreground' : 'foreground'}
+                  >
                     {size.label}
                   </ThemedText>
-                  <ThemedText type="small" themeColor={selected ? 'accent-foreground' : 'foreground-secondary'}>
+                  <ThemedText
+                    type="small"
+                    themeColor={
+                      selected ? 'accent-foreground' : 'foreground-secondary'
+                    }
+                  >
                     ${size.price.toFixed(2)}
                   </ThemedText>
                 </ThemedView>

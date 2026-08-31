@@ -2,7 +2,8 @@ import { View, type ViewProps } from 'react-native';
 
 import { cn } from '@/lib/cn';
 
-export type ThemedViewColor = 'background' | 'background-element' | 'background-selected' | 'accent';
+export type ThemedViewColor =
+  'background' | 'background-element' | 'background-selected' | 'accent';
 
 export type ThemedViewProps = ViewProps & {
   type?: ThemedViewColor;
@@ -16,6 +17,10 @@ const colorClasses: Record<ThemedViewColor, string> = {
   accent: 'bg-accent',
 };
 
-export function ThemedView({ className, type = 'background', ...otherProps }: ThemedViewProps) {
+export function ThemedView({
+  className,
+  type = 'background',
+  ...otherProps
+}: ThemedViewProps) {
   return <View className={cn(colorClasses[type], className)} {...otherProps} />;
 }

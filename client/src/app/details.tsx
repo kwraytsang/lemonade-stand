@@ -29,17 +29,26 @@ const detailsSchema = z
         code: 'custom',
         path: ['customerContact'],
         message:
-          data.contactMethod === 'email' ? 'Enter a valid email address.' : 'Enter a valid phone number.',
+          data.contactMethod === 'email'
+            ? 'Enter a valid email address.'
+            : 'Enter a valid phone number.',
       });
     }
   });
 
 type DetailsFormValues = z.infer<typeof detailsSchema>;
 
-const inputClassName = 'rounded-2xl border border-border px-4 py-4 text-base text-foreground';
+const inputClassName =
+  'rounded-2xl border border-border px-4 py-4 text-base text-foreground';
 
 export default function DetailsScreen() {
-  const { items, customerName, contactMethod, customerContact, setContactDetails } = useCart();
+  const {
+    items,
+    customerName,
+    contactMethod,
+    customerContact,
+    setContactDetails,
+  } = useCart();
 
   const {
     control,
@@ -81,14 +90,19 @@ export default function DetailsScreen() {
       keyboardShouldPersistTaps="handled"
       bottomBar={
         <ThemedView className="px-4 pt-2">
-          <PrimaryButton label="Review order" onPress={handleSubmit(onSubmit)} />
+          <PrimaryButton
+            label="Review order"
+            onPress={handleSubmit(onSubmit)}
+          />
         </ThemedView>
-      }>
+      }
+    >
       <ThemedText type="eyebrow" themeColor="foreground-secondary">
         Step 2 of 3
       </ThemedText>
       <ThemedText themeColor="foreground-secondary">
-        We&apos;ll use this to identify your order and let you know when it&apos;s ready.
+        We&apos;ll use this to identify your order and let you know when
+        it&apos;s ready.
       </ThemedText>
 
       <ThemedText type="smallBold" className="mt-6 mb-2">
@@ -132,11 +146,16 @@ export default function DetailsScreen() {
                     onChange(method);
                     setValue('customerContact', '');
                   }}
-                  className="flex-1">
+                  className="flex-1"
+                >
                   <ThemedView
                     type={selected ? 'accent' : 'background'}
-                    className="items-center rounded-2xl border border-border py-4">
-                    <ThemedText type="smallBold" themeColor={selected ? 'accent-foreground' : 'foreground'}>
+                    className="items-center rounded-2xl border border-border py-4"
+                  >
+                    <ThemedText
+                      type="smallBold"
+                      themeColor={selected ? 'accent-foreground' : 'foreground'}
+                    >
                       {method === 'phone' ? 'Phone' : 'Email'}
                     </ThemedText>
                   </ThemedView>
@@ -155,9 +174,13 @@ export default function DetailsScreen() {
             value={value}
             onChangeText={onChange}
             onBlur={onBlur}
-            placeholder={selectedMethod === 'phone' ? 'Phone number' : 'Email address'}
+            placeholder={
+              selectedMethod === 'phone' ? 'Phone number' : 'Email address'
+            }
             placeholderTextColorClassName="accent-foreground-secondary"
-            keyboardType={selectedMethod === 'phone' ? 'phone-pad' : 'email-address'}
+            keyboardType={
+              selectedMethod === 'phone' ? 'phone-pad' : 'email-address'
+            }
             autoCapitalize="none"
             className={`${inputClassName} mt-2`}
           />

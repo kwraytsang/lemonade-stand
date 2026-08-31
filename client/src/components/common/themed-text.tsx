@@ -2,7 +2,14 @@ import { Platform, Text, type TextProps } from 'react-native';
 
 import { cn } from '@/lib/cn';
 
-export type ThemedTextType = 'default' | 'title' | 'small' | 'smallBold' | 'subtitle' | 'linkPrimary' | 'eyebrow';
+export type ThemedTextType =
+  | 'default'
+  | 'title'
+  | 'small'
+  | 'smallBold'
+  | 'subtitle'
+  | 'linkPrimary'
+  | 'eyebrow';
 
 export type ThemedTextColor =
   | 'foreground'
@@ -37,6 +44,16 @@ const colorClasses: Record<ThemedTextColor, string> = {
   'accent-foreground': 'text-accent-foreground',
 };
 
-export function ThemedText({ className, type = 'default', themeColor = 'foreground', ...rest }: ThemedTextProps) {
-  return <Text className={cn(colorClasses[themeColor], typeClasses[type], className)} {...rest} />;
+export function ThemedText({
+  className,
+  type = 'default',
+  themeColor = 'foreground',
+  ...rest
+}: ThemedTextProps) {
+  return (
+    <Text
+      className={cn(colorClasses[themeColor], typeClasses[type], className)}
+      {...rest}
+    />
+  );
 }

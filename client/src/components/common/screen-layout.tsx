@@ -51,20 +51,26 @@ export function ScreenLayout({
       className="flex-1"
       contentContainerClassName={contentContainerClassName}
       contentContainerStyle={{ flexGrow: 1 }}
-      keyboardShouldPersistTaps={keyboardShouldPersistTaps}>
+      keyboardShouldPersistTaps={keyboardShouldPersistTaps}
+    >
       {children}
     </ScrollView>
   ) : (
     children
   );
 
-  const bottomBarNode = bottomBar ? <View onLayout={handleBottomBarLayout}>{bottomBar}</View> : null;
+  const bottomBarNode = bottomBar ? (
+    <View onLayout={handleBottomBarLayout}>{bottomBar}</View>
+  ) : null;
 
   // Pinned outside the ScrollView so it sits at the bottom at rest; when
   // keyboardAvoiding is set, it's still inside the KeyboardAvoidingView, so it
   // rises with the keyboard instead of staying fixed behind it.
   const body = keyboardAvoiding ? (
-    <KeyboardAvoidingView className="flex-1 self-stretch" behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView
+      className="flex-1 self-stretch"
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       {content}
       {bottomBarNode}
     </KeyboardAvoidingView>

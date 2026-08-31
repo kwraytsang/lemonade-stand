@@ -9,11 +9,19 @@ import { CartItem } from '@/types/order';
 
 type CartLineItemProps = {
   item: CartItem;
-  onUpdateQuantity: (beverageId: string, sizeId: string, quantity: number) => void;
+  onUpdateQuantity: (
+    beverageId: string,
+    sizeId: string,
+    quantity: number,
+  ) => void;
   onRemove: (beverageId: string, sizeId: string) => void;
 };
 
-export function CartLineItem({ item, onUpdateQuantity, onRemove }: CartLineItemProps) {
+export function CartLineItem({
+  item,
+  onUpdateQuantity,
+  onRemove,
+}: CartLineItemProps) {
   const colorScheme = useColorScheme();
   const theme = colorScheme === 'dark' ? Colors.dark : Colors.light;
 
@@ -28,8 +36,12 @@ export function CartLineItem({ item, onUpdateQuantity, onRemove }: CartLineItemP
 
       <QuantityStepper
         quantity={item.quantity}
-        onDecrement={() => onUpdateQuantity(item.beverageId, item.sizeId, item.quantity - 1)}
-        onIncrement={() => onUpdateQuantity(item.beverageId, item.sizeId, item.quantity + 1)}
+        onDecrement={() =>
+          onUpdateQuantity(item.beverageId, item.sizeId, item.quantity - 1)
+        }
+        onIncrement={() =>
+          onUpdateQuantity(item.beverageId, item.sizeId, item.quantity + 1)
+        }
         size={28}
       />
 
@@ -39,7 +51,8 @@ export function CartLineItem({ item, onUpdateQuantity, onRemove }: CartLineItemP
 
       <Pressable
         accessibilityLabel="Remove item"
-        onPress={() => onRemove(item.beverageId, item.sizeId)}>
+        onPress={() => onRemove(item.beverageId, item.sizeId)}
+      >
         <SymbolView
           name={{ ios: 'trash', android: 'delete', web: 'delete' }}
           size={20}

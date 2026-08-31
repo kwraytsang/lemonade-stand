@@ -1,4 +1,8 @@
-import { ActivityIndicator, Pressable, type PressableProps } from 'react-native';
+import {
+  ActivityIndicator,
+  Pressable,
+  type PressableProps,
+} from 'react-native';
 
 import { ThemedText } from '@/components/common/themed-text';
 import { cn } from '@/lib/cn';
@@ -12,13 +16,25 @@ type PrimaryButtonProps = {
   style?: PressableProps['style'];
 };
 
-export function PrimaryButton({ label, onPress, disabled, loading, className, style }: PrimaryButtonProps) {
+export function PrimaryButton({
+  label,
+  onPress,
+  disabled,
+  loading,
+  className,
+  style,
+}: PrimaryButtonProps) {
   return (
     <Pressable
       onPress={onPress}
       disabled={disabled || loading}
-      className={cn('items-center rounded-2xl bg-accent py-4', loading && 'opacity-60', className)}
-      style={style}>
+      className={cn(
+        'items-center rounded-2xl bg-accent py-4',
+        loading && 'opacity-60',
+        className,
+      )}
+      style={style}
+    >
       {loading ? (
         <ActivityIndicator colorClassName="text-accent-foreground" />
       ) : (

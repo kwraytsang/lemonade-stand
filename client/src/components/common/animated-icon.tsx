@@ -32,9 +32,15 @@ export function AnimatedSplashOverlay() {
     },
   });
 
-  const image = <Image className="h-[71px] w-[76px]" source={require('@/assets/images/expo-logo.png')} />;
+  const image = (
+    <Image
+      className="h-[71px] w-[76px]"
+      source={require('@/assets/images/expo-logo.png')}
+    />
+  );
 
-  const overlayClassName = 'absolute inset-0 z-[1000] items-center justify-center bg-[#208AEF]';
+  const overlayClassName =
+    'absolute inset-0 z-[1000] items-center justify-center bg-[#208AEF]';
 
   return animate ? (
     <Animated.View
@@ -44,7 +50,8 @@ export function AnimatedSplashOverlay() {
           scheduleOnRN(setVisible, false);
         }
       })}
-      className={overlayClassName}>
+      className={overlayClassName}
+    >
       {image}
     </Animated.View>
   ) : (
@@ -54,7 +61,8 @@ export function AnimatedSplashOverlay() {
           setAnimate(true);
         });
       }}
-      className={overlayClassName}>
+      className={overlayClassName}
+    >
       {image}
     </View>
   );

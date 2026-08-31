@@ -52,19 +52,32 @@ export default function ReviewScreen() {
       contentContainerClassName="gap-4 px-4 pt-4 pb-4"
       bottomBar={
         <ThemedView className="px-4 pt-2">
-          <PrimaryButton label="Place order" onPress={placeOrder} loading={submitting} />
+          <PrimaryButton
+            label="Place order"
+            onPress={placeOrder}
+            loading={submitting}
+          />
         </ThemedView>
-      }>
+      }
+    >
       <ThemedText type="eyebrow" themeColor="foreground-secondary">
         Step 3 of 3
       </ThemedText>
-      <ThemedText themeColor="foreground-secondary">One last look before we send it through.</ThemedText>
+      <ThemedText themeColor="foreground-secondary">
+        One last look before we send it through.
+      </ThemedText>
 
-      <ReviewSummaryCard title="Order items" onEdit={() => router.dismissTo('/cart')}>
+      <ReviewSummaryCard
+        title="Order items"
+        onEdit={() => router.dismissTo('/cart')}
+      >
         <OrderItemsSummary items={items} />
       </ReviewSummaryCard>
 
-      <ReviewSummaryCard title="Contact details" onEdit={() => router.dismissTo('/details')}>
+      <ReviewSummaryCard
+        title="Contact details"
+        onEdit={() => router.dismissTo('/details')}
+      >
         <ThemedText type="smallBold">{customerName}</ThemedText>
         <ThemedText type="small" themeColor="foreground-secondary">
           {contactMethod === 'phone' ? 'Phone' : 'Email'} · {customerContact}

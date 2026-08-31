@@ -10,7 +10,11 @@ type ReviewSummaryCardProps = {
   children: ReactNode;
 };
 
-export function ReviewSummaryCard({ title, onEdit, children }: ReviewSummaryCardProps) {
+export function ReviewSummaryCard({
+  title,
+  onEdit,
+  children,
+}: ReviewSummaryCardProps) {
   return (
     <ThemedView className="gap-1 rounded-2xl border border-border p-4">
       <ThemedView className="mb-1 flex-row items-center justify-between">

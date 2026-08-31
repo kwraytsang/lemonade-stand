@@ -28,7 +28,9 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <ThemeProvider
+          value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
+        >
           <ToastProvider>
             <CartProvider>
               <AnimatedSplashOverlay />
@@ -39,14 +41,28 @@ export default function RootLayout() {
                   headerTitleStyle: { fontWeight: '600' },
                   headerShadowVisible: false,
                   headerBackButtonDisplayMode: 'minimal',
-                }}>
-                <Stack.Screen name="index" options={{ title: 'Lemonade Stand' }} />
+                }}
+              >
+                <Stack.Screen
+                  name="index"
+                  options={{ title: 'Lemonade Stand' }}
+                />
                 <Stack.Screen name="cart" options={{ title: 'Your Order' }} />
-                <Stack.Screen name="details" options={{ title: 'Your Details' }} />
-                <Stack.Screen name="review" options={{ title: 'Review Order' }} />
+                <Stack.Screen
+                  name="details"
+                  options={{ title: 'Your Details' }}
+                />
+                <Stack.Screen
+                  name="review"
+                  options={{ title: 'Review Order' }}
+                />
                 <Stack.Screen
                   name="success"
-                  options={{ title: '', headerBackVisible: false, gestureEnabled: false }}
+                  options={{
+                    title: '',
+                    headerBackVisible: false,
+                    gestureEnabled: false,
+                  }}
                 />
               </Stack>
             </CartProvider>

@@ -39,7 +39,10 @@ describe('CartProvider / useCart', () => {
     await act(() => result.current.addItem(smallLemonade, 2));
 
     expect(result.current.items).toHaveLength(1);
-    expect(result.current.items[0]).toMatchObject({ ...smallLemonade, quantity: 2 });
+    expect(result.current.items[0]).toMatchObject({
+      ...smallLemonade,
+      quantity: 2,
+    });
     expect(result.current.total).toBe(4);
   });
 
@@ -57,7 +60,12 @@ describe('CartProvider / useCart', () => {
     const { result } = await renderHook(() => useCart(), { wrapper });
 
     await act(() => result.current.addItem(smallLemonade, 1));
-    await act(() => result.current.addItem({ ...smallLemonade, sizeId: 'large', unitPrice: 4 }, 1));
+    await act(() =>
+      result.current.addItem(
+        { ...smallLemonade, sizeId: 'large', unitPrice: 4 },
+        1,
+      ),
+    );
 
     expect(result.current.items).toHaveLength(2);
     expect(result.current.total).toBe(6);
@@ -119,7 +127,9 @@ describe('CartProvider / useCart', () => {
     await act(() => result.current.placeOrder());
 
     expect(result.current.confirmationNumber).toBeNull();
-    expect(result.current.submitError).toBe('Something went wrong placing your order. Please try again.');
+    expect(result.current.submitError).toBe(
+      'Something went wrong placing your order. Please try again.',
+    );
     // the cart is preserved so the user can retry
     expect(result.current.items).toHaveLength(1);
   });

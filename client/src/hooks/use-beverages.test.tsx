@@ -16,7 +16,9 @@ function createWrapper() {
     defaultOptions: { queries: { retry: false } },
   });
   function Wrapper({ children }: { children: React.ReactNode }) {
-    return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+    return (
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    );
   }
   return Wrapper;
 }
@@ -30,7 +32,9 @@ describe('useBeverages', () => {
     const beverages = [{ id: '1', name: 'Iced Tea', sizes: [] }];
     mockedFetchBeverageTypes.mockResolvedValue(beverages);
 
-    const { result } = await renderHook(() => useBeverages(), { wrapper: createWrapper() });
+    const { result } = await renderHook(() => useBeverages(), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.loading).toBe(false));
 
@@ -39,9 +43,13 @@ describe('useBeverages', () => {
   });
 
   it('surfaces the ApiError message when the request fails', async () => {
-    mockedFetchBeverageTypes.mockRejectedValue(new ApiError(500, 'Something went wrong.'));
+    mockedFetchBeverageTypes.mockRejectedValue(
+      new ApiError(500, 'Something went wrong.'),
+    );
 
-    const { result } = await renderHook(() => useBeverages(), { wrapper: createWrapper() });
+    const { result } = await renderHook(() => useBeverages(), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.loading).toBe(false));
 
@@ -52,16 +60,22 @@ describe('useBeverages', () => {
   it('falls back to a generic message for a non-ApiError failure', async () => {
     mockedFetchBeverageTypes.mockRejectedValue(new Error('boom'));
 
-    const { result } = await renderHook(() => useBeverages(), { wrapper: createWrapper() });
+    const { result } = await renderHook(() => useBeverages(), {
+      wrapper: createWrapper(),
+    });
 
     await waitFor(() => expect(result.current.loading).toBe(false));
 
-    expect(result.current.error).toBe('Something went wrong loading the menu. Please try again.');
+    expect(result.current.error).toBe(
+      'Something went wrong loading the menu. Please try again.',
+    );
   });
 
   it('refetch re-runs the request and clears a previous error', async () => {
     mockedFetchBeverageTypes.mockRejectedValueOnce(new ApiError(500, 'boom'));
-    const { result } = await renderHook(() => useBeverages(), { wrapper: createWrapper() });
+    const { result } = await renderHook(() => useBeverages(), {
+      wrapper: createWrapper(),
+    });
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(result.current.error).toBe('boom');
 
@@ -77,7 +91,9 @@ describe('useBeverages', () => {
   it('exposes refreshing (not loading) while a pull-to-refresh refetch is in flight', async () => {
     const beverages = [{ id: '1', name: 'Iced Tea', sizes: [] }];
     mockedFetchBeverageTypes.mockResolvedValue(beverages);
-    const { result } = await renderHook(() => useBeverages(), { wrapper: createWrapper() });
+    const { result } = await renderHook(() => useBeverages(), {
+      wrapper: createWrapper(),
+    });
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(result.current.refreshing).toBe(false);
 

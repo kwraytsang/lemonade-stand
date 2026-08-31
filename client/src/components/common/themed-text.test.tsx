@@ -17,7 +17,9 @@ describe('ThemedText', () => {
   });
 
   it('applies the destructive theme color', async () => {
-    await render(<ThemedText themeColor="destructive">Something went wrong</ThemedText>);
+    await render(
+      <ThemedText themeColor="destructive">Something went wrong</ThemedText>,
+    );
 
     const node = screen.getByText('Something went wrong');
     expect(node.props.className).toContain('text-destructive');

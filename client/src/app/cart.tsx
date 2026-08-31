@@ -19,10 +19,14 @@ export default function CartScreen() {
       bottomBar={
         items.length > 0 ? (
           <ThemedView className="px-4 pt-2">
-            <PrimaryButton label="Continue" onPress={() => router.push('/details')} />
+            <PrimaryButton
+              label="Continue"
+              onPress={() => router.push('/details')}
+            />
           </ThemedView>
         ) : null
-      }>
+      }
+    >
       <ThemedText type="eyebrow" themeColor="foreground-secondary">
         Step 1 of 3
       </ThemedText>

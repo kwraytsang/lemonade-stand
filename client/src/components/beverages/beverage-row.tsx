@@ -21,12 +21,20 @@ export function BeverageRow({
         <ThemedView className="flex-1 gap-0.5">
           <ThemedText type="subtitle">{beverage.name}</ThemedText>
           {beverage.description ? (
-            <ThemedText type="small" themeColor="foreground-secondary" numberOfLines={2}>
+            <ThemedText
+              type="small"
+              themeColor="foreground-secondary"
+              numberOfLines={2}
+            >
               {beverage.description}
             </ThemedText>
           ) : null}
           {fromPrice !== null ? (
-            <ThemedText type="small" themeColor="foreground-secondary" className="mt-1">
+            <ThemedText
+              type="small"
+              themeColor="foreground-secondary"
+              className="mt-1"
+            >
               from ${fromPrice.toFixed(2)}
             </ThemedText>
           ) : null}

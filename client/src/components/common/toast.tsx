@@ -1,4 +1,13 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -51,9 +60,19 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           exiting={FadeOutDown}
           pointerEvents="none"
           className="absolute inset-x-4 z-[1000]"
-          style={{ bottom: insets.bottom + bottomOffset + GAP_ABOVE_BOTTOM_BAR }}>
-          <ThemedView type="background-element" className="rounded-2xl px-4 py-3">
-            <ThemedText type="small" themeColor="destructive" className="text-center">
+          style={{
+            bottom: insets.bottom + bottomOffset + GAP_ABOVE_BOTTOM_BAR,
+          }}
+        >
+          <ThemedView
+            type="background-element"
+            className="rounded-2xl px-4 py-3"
+          >
+            <ThemedText
+              type="small"
+              themeColor="destructive"
+              className="text-center"
+            >
               {toast.message}
             </ThemedText>
           </ThemedView>

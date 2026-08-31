@@ -1,7 +1,10 @@
 import { SymbolView, type SymbolViewProps } from 'expo-symbols';
 import { Pressable, useColorScheme } from 'react-native';
 
-import { ThemedText, type ThemedTextColor } from '@/components/common/themed-text';
+import {
+  ThemedText,
+  type ThemedTextColor,
+} from '@/components/common/themed-text';
 import { ThemedView } from '@/components/common/themed-view';
 import { Colors } from '@/constants/theme';
 
@@ -39,7 +42,11 @@ export function EmptyState({
         <SymbolView
           name={icon}
           size={28}
-          tintColor={titleColor === 'destructive' ? theme.destructive : theme.textSecondary}
+          tintColor={
+            titleColor === 'destructive'
+              ? theme.destructive
+              : theme.textSecondary
+          }
           style={{ marginBottom: 4 }}
         />
       ) : null}
@@ -47,12 +54,19 @@ export function EmptyState({
         {title}
       </ThemedText>
       {message ? (
-        <ThemedText type="small" themeColor="foreground-secondary" className="text-center">
+        <ThemedText
+          type="small"
+          themeColor="foreground-secondary"
+          className="text-center"
+        >
           {message}
         </ThemedText>
       ) : null}
       {actionLabel && onAction ? (
-        <Pressable onPress={onAction} className="mt-1 flex-row items-center gap-1.5">
+        <Pressable
+          onPress={onAction}
+          className="mt-1 flex-row items-center gap-1.5"
+        >
           <SymbolView name={actionIcon} size={16} tintColor={theme.link} />
           <ThemedText type="linkPrimary" className="text-center">
             {actionLabel}

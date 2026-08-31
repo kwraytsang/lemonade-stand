@@ -12,7 +12,9 @@ type SubmitOrderResponse = {
   confirmationNumber: string;
 };
 
-export async function submitOrder(input: SubmitOrderInput): Promise<SubmitOrderResponse> {
+export async function submitOrder(
+  input: SubmitOrderInput,
+): Promise<SubmitOrderResponse> {
   return apiClient.post<SubmitOrderResponse>('/customer/orders', {
     customerName: input.customerName,
     contactMethod: input.contactMethod,

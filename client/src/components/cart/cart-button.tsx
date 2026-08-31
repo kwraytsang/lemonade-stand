@@ -17,7 +17,8 @@ export function CartButton() {
     <Pressable onPress={() => router.push('/cart')}>
       <ThemedView
         type="background-element"
-        className="flex-row items-center gap-1 rounded-2xl px-4 py-1">
+        className="flex-row items-center gap-1 rounded-2xl px-4 py-1"
+      >
         <SymbolView
           name={{ ios: 'cart', android: 'shopping_cart', web: 'shopping_cart' }}
           size={18}
@@ -25,7 +26,11 @@ export function CartButton() {
         />
         {count > 0 ? (
           <ThemedView className="h-[18px] min-w-[18px] items-center justify-center rounded-full bg-foreground px-1">
-            <ThemedText type="small" themeColor="background" className="font-bold">
+            <ThemedText
+              type="small"
+              themeColor="background"
+              className="font-bold"
+            >
               {count}
             </ThemedText>
           </ThemedView>
