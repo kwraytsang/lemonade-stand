@@ -1,10 +1,22 @@
 # Lemonade Stand
 
-A mobile ordering app for a lemonade stand: customers browse beverages, build an order, and get a confirmation number; admins manage the beverage catalog through a separate set of API endpoints. The project has two parts: `server/`, a NestJS, TypeORM, and PostgreSQL API, and `client/`, a React Native (Expo) app.
+This project is a mobile ordering app for a lemonade stand. A customer can browse the beverages, build an order, and get a confirmation number. An admin can manage the beverage catalog through a separate set of API endpoints.
+
+The project has two parts:
+
+- `server/`: an API that uses NestJS, TypeORM, and PostgreSQL.
+- `client/`: a React Native (Expo) app.
 
 ## Prerequisites
 
-Running this project requires Node.js 22 or later and npm. [Docker Desktop](https://www.docker.com/products/docker-desktop/) is recommended for running the backend and database. Xcode is required on a Mac for the iOS Simulator; see the note below on why this is the tested path. The client also depends on `expo-dev-client`, so it needs a custom development build and will **not** run inside the plain [Expo Go](https://expo.dev/go) app.
+Before you start, make sure you have these tools:
+
+- Node.js, version 22 or later
+- npm
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (recommended). Use it to run the backend and the database.
+- Xcode (Mac only). Use it for the iOS Simulator. See the note below about why this is the tested path.
+
+**Note:** The client depends on `expo-dev-client`. Because of this, the client needs a custom development build. The client will **not** run inside the plain [Expo Go](https://expo.dev/go) app.
 
 ## Backend (`server/`)
 
@@ -15,23 +27,37 @@ cd server
 docker compose up -d --build
 ```
 
-This starts two containers: `postgres`, running Postgres 16 with a named volume so data survives restarts, and `app`, the NestJS API built from `server/Dockerfile`.
+This command starts two containers:
 
-The API is available at `http://localhost:3000`, health check at `http://localhost:3000/api/health`, and interactive Swagger docs at `http://localhost:3000/docs`.
+- `postgres`: runs Postgres 16. This container uses a named volume, so the data survives a restart.
+- `app`: runs the NestJS API. Docker builds this container from `server/Dockerfile`.
 
-The `admin/*` routes are unauthenticated (see [Assumptions & Design Choices](#assumptions--design-choices)); no key or header is needed to call them.
+Once the containers are running, you can reach these URLs:
 
-To stop: `docker compose down` (add `-v` to also delete the Postgres volume and its data).
+- API: `http://localhost:3000`
+- Health check: `http://localhost:3000/api/health`
+- Swagger docs (interactive): `http://localhost:3000/docs`
+
+The `admin/*` routes do not need authentication (see [Assumptions & Design Choices](#assumptions--design-choices)). You do not need a key or a header to call them.
+
+To stop the containers, run `docker compose down`. Add the `-v` flag to also delete the Postgres volume and its data.
 
 ### Run locally (without Docker)
 
-You'll need a Postgres instance (14+) of your own. `.env.example` expects a database called `lemonade`, owned by a user called `lemonade` with password `lemonade`, running on `localhost:5432`. None of that exists on a fresh Postgres install, so create it first with one command:
+You need your own Postgres instance, version 14 or later. The file `.env.example` expects these settings:
+
+- Database name: `lemonade`
+- Database owner: `lemonade`
+- Password: `lemonade`
+- Host: `localhost:5432`
+
+A fresh Postgres install has none of this. Create it first with one command:
 
 ```bash
 psql postgres -c "CREATE ROLE lemonade WITH LOGIN PASSWORD 'lemonade'; CREATE DATABASE lemonade OWNER lemonade;"
 ```
 
-Then:
+Then run:
 
 ```bash
 cd server
@@ -40,20 +66,22 @@ npm install
 npm run start:dev
 ```
 
-The app creates its own schema on boot (`synchronize: true`; see [Assumptions](#assumptions--design-choices)), so no manual migration step is required.
+The app creates its own database schema when it starts (`synchronize: true`; see [Assumptions](#assumptions--design-choices)). You do not need to run a manual migration step.
 
 ### Seeding beverage data
 
-A fresh database starts with zero beverage types, so the client's menu will be empty until you create some. Run:
+A fresh database has no beverage types. Because of this, the client's menu is empty until you create some. Run:
 
 ```bash
 cd server
 npm run seed
 ```
 
-This creates a few sample beverage types with sizes and prices (through the same `BeverageTypesService`/`BeverageSizesService` the admin API uses), plus one type with no sizes yet ("Seasonal Special") to demonstrate that types without a price are excluded from the customer-facing `GET /customer/beverage-types` list. See `server/src/seed.ts`.
+This command creates a few sample beverage types, each with sizes and prices. It uses the same `BeverageTypesService` and `BeverageSizesService` that the admin API uses.
 
-Alternatively, create data by hand through the admin endpoints, either through the Swagger UI at `/docs` or with curl. For example:
+The command also creates one type with no sizes yet: "Seasonal Special". Use this type to check that the customer-facing list, `GET /customer/beverage-types`, excludes types with no price. See `server/src/seed.ts` for the code.
+
+You can also create data by hand, through the admin endpoints. Use the Swagger UI at `/docs`, or use curl. For example:
 
 ```bash
 curl -X POST http://localhost:3000/api/v1/admin/beverage-types \
@@ -67,20 +95,25 @@ curl -X POST http://localhost:3000/api/v1/admin/beverage-sizes \
 
 ### API Reference
 
-Full interactive documentation, including a try-it-out console, is at **`http://localhost:3000/docs`** (Swagger UI) once the server is running. The reference below covers the same endpoints for quick copy-paste.
+Start the server, then go to **`http://localhost:3000/docs`** for the full interactive documentation (Swagger UI). This page includes a try-it-out console.
 
-All paths are relative to the base URL `http://localhost:3000/api/v1`. `customer/*` endpoints are what the app itself calls; `admin/*` endpoints manage the catalog and list orders, and are unauthenticated (see [Assumptions & Design Choices](#assumptions--design-choices)).
+The reference below lists the same endpoints. Use it for quick copy-and-paste examples.
+
+All paths below are relative to the base URL `http://localhost:3000/api/v1`.
+
+- The app calls the `customer/*` endpoints.
+- Use the `admin/*` endpoints to manage the catalog and to list orders. These endpoints do not need authentication (see [Assumptions & Design Choices](#assumptions--design-choices)).
 
 #### Beverage types
 
 | Method | Path | Description |
 | --- | --- | --- |
-| GET | `/customer/beverage-types` | List beverage types that have at least one size (i.e. orderable) |
+| GET | `/customer/beverage-types` | List orderable beverage types (types with at least one size) |
 | GET | `/customer/beverage-types/:id` | Get one beverage type |
-| GET | `/admin/beverage-types` | List **all** beverage types, including ones with no sizes yet |
+| GET | `/admin/beverage-types` | List **all** beverage types, including types with no sizes yet |
 | GET | `/admin/beverage-types/:id` | Get one beverage type |
 | POST | `/admin/beverage-types` | Create a beverage type |
-| PATCH | `/admin/beverage-types/:id` | Update a beverage type (any subset of the create fields) |
+| PATCH | `/admin/beverage-types/:id` | Update a beverage type (you can send any subset of the create fields) |
 | DELETE | `/admin/beverage-types/:id` | Delete a beverage type and its sizes (returns `204 No Content`) |
 
 `POST`/`PATCH` request body:
@@ -113,8 +146,8 @@ Response (`GET`/`POST`):
 | GET | `/customer/beverage-sizes/:id` | Get one beverage size |
 | GET | `/admin/beverage-sizes` | List all beverage sizes |
 | GET | `/admin/beverage-sizes/:id` | Get one beverage size |
-| POST | `/admin/beverage-sizes` | Create a size (and price) for a beverage type |
-| PATCH | `/admin/beverage-sizes/:id` | Update a size (any subset of the create fields) |
+| POST | `/admin/beverage-sizes` | Create a size (and a price) for a beverage type |
+| PATCH | `/admin/beverage-sizes/:id` | Update a size (you can send any subset of the create fields) |
 | DELETE | `/admin/beverage-sizes/:id` | Delete a size (returns `204 No Content`) |
 
 `POST`/`PATCH` request body:
@@ -131,7 +164,7 @@ Response (`GET`/`POST`):
 
 | Method | Path | Description |
 | --- | --- | --- |
-| POST | `/customer/orders` | Submit an order; returns it with a confirmation number |
+| POST | `/customer/orders` | Submit an order (the response includes a confirmation number) |
 | GET | `/admin/orders` | List all submitted orders, newest first |
 
 `POST /customer/orders` request body:
@@ -190,11 +223,12 @@ npm install
 npm run ios             # first run: builds a custom dev client and launches the iOS Simulator
 ```
 
-**Development and testing focused on iOS, due to time constraints.** `npm run ios` (`expo run:ios`) is the tested, recommended path and is what the instructions below assume; `npm run android` should work the same way in principle, since nothing platform-specific was written, but it hasn't actually been run or verified.
+**Note: development and testing focused on iOS simulator, due to time constraints.**
 
-The first `npm run ios` does a full native build (via Xcode/CocoaPods) and installs a custom dev client on the Simulator; this can take a few minutes the first time. After that, `npm start` and pressing `i` reloads the same build much faster. Because the client depends on `expo-dev-client`, the plain Expo Go app (App Store install, QR-code scanning) **cannot** run this project. Expo CLI detects `expo-dev-client` and always targets a custom development build instead, so there's no supported "just scan a QR code" path here.
+Use `npm run ios` (`expo run:ios`). This is the tested and recommended path.
 
-**Note on `EXPO_PUBLIC_API_URL`:** `localhost` resolves to the device itself, not your development machine. On the iOS Simulator, the default `http://localhost:3000/api/v1` works as is. On a physical device, running through its own dev-client build, use your machine's LAN IP.
+- On the iOS Simulator: the default value, `http://localhost:3000/api/v1`, works with no change.
+- On a physical device, running its own dev-client build: use your machine's LAN IP instead.
 
 ### Frontend tests
 
@@ -205,22 +239,26 @@ npm test
 
 ## Assumptions & Design Choices
 
-1. **`synchronize: true` on the TypeORM connection.** The schema is created and updated automatically from the entities on boot. This is convenient for a take-home project but isn't safe for a production database with real data; a production setup would use TypeORM migrations instead.
-2. **Admin routes (`/admin/*`) are intentionally left public**, with no login, API key, or role system in front of them, to keep catalog management easy to exercise while testing. A production setup would put real permission control in front of them.
-3. **Seed script (`npm run seed` in `server/`).** It goes through the same admin services as the API, rather than inserting rows directly, so seeded data exercises the same validation. Beverage types and sizes can also be created by hand through the admin API (see above).
-4. **Prices are stored as `decimal` columns (as strings) in Postgres.** This avoids floating-point rounding issues with money; the client converts them to `number` at the API boundary for display and arithmetic.
-5. **`totalPrice` is never accepted as client input.** `POST /customer/orders` only takes `beverageTypeId`, `sizeId`, and `quantity` per line item; the server looks up each size's current price from the database and computes the total itself. The order record (and the API response) does include a `totalPrice`, satisfying "an order should include... total order price" from the requirements. It's just computed server-side rather than trusted from the client, since accepting a client-supplied total would let anyone submit an arbitrary price for their order. The client still computes and displays a running total locally as the cart is built, purely for UX; the server ignores it and computes its own authoritative figure at submission time.
-6. **Confirmation numbers** are generated as `LM-` followed by a random 6-digit number, checked for uniqueness against existing orders with a few retries before giving up.
-7. **Cart state lives only in memory** (React Context) and isn't persisted to device storage, so a reload or app restart clears the in-progress order. Submitted orders are, of course, persisted server-side.
-8. **Contact method is phone or email**, chosen with a toggle; validation on both the client and server adapts to whichever is selected.
+1. **`synchronize: true` on the TypeORM connection.** When the app starts, TypeORM creates and updates the database schema automatically from the entities. This is convenient for a take-home project, but it is not safe for a production database with real data. A production setup should use TypeORM migrations instead.
+2. **The admin routes (`/admin/*`) are public on purpose.** They have no login, no API key, and no role system in front of them. This choice keeps catalog management easy to test. A production setup should add real permission control in front of these routes.
+3. **The seed script (`npm run seed` in `server/`).** It uses the same admin services as the API, rather than inserting rows directly, so the seeded data goes through the same validation as a normal API call. You can also create beverage types and sizes by hand, through the admin API (see above).
+4. **Postgres stores prices as `decimal` columns, as strings.** This avoids floating-point rounding issues with money. The client converts each price to a `number` at the API boundary, for display and for arithmetic.
+5. **The server never accepts `totalPrice` as client input.** `POST /customer/orders` only accepts `beverageTypeId`, `sizeId`, and `quantity` for each line item. The server looks up each size's current price in the database and computes the total itself. The order record, and the API response, do include a `totalPrice` field — this satisfies the requirement that an order include a total order price. The server computes this total rather than trusting one from the client, since a client-supplied total would let anyone submit an arbitrary price for an order. The client still computes and displays a running total locally, as the cart is built, purely for the user interface; the server ignores that local figure and computes its own authoritative total at submission time.
+6. **Confirmation numbers.** Each number has the prefix `LM-`, followed by a random 6-digit number. The server checks each number against existing orders to make sure it is unique, and retries a few times before giving up.
+7. **The cart state lives only in memory** (React Context) and is not saved to device storage. Because of this, a reload or an app restart clears the in-progress order. Submitted orders, of course, are persisted server-side.
+8. **The customer picks a contact method, phone or email, with a toggle.** The validation, on both the client and the server, adapts to the selected method.
 
 ## Bonus Features Implemented
 
-1. **Unit tests.** Both apps have unit test coverage. On the backend, this covers services, controllers, the global exception filter, and DTO input-validation tests (using `class-validator`'s `validate()` directly against each DTO) for every module. On the frontend, it covers the cart context and state management, the `useBeverages` data-fetching hook, the `lib/` API layer (request handling, error mapping, response shaping), and a shared component.
-2. **Input validation on both sides.** The backend uses a global `ValidationPipe` (`whitelist`, `forbidNonWhitelisted`, `transform`) plus `class-validator` decorators on every DTO (UUIDs, enums, positive numbers, required strings, nested array validation for order line items), including a custom validator that checks `customerContact` is a well-formed email or phone number depending on the selected `contactMethod`. The frontend's customer-details form uses `react-hook-form` with `zod` for validation (name length, and phone or email format depending on the selected contact method).
-3. **State management.** `@tanstack/react-query` handles all server data (beverages, order submission) with proper loading, error, and refetch states, and React Context (`CartProvider`) handles local cart state shared across the ordering flow.
-4. **Containerization.** `server/Dockerfile` (a multi-stage build) and `server/docker-compose.yml` run the API and Postgres together, each with health checks.
-5. **Sequence diagram.** See [Order Placement Flow](#order-placement-flow) below.
+1. **Unit tests.** Both apps have unit test coverage.
+   - Backend: services, controllers, the global exception filter, and DTO input-validation tests for every module (using `class-validator`'s `validate()` directly against each DTO).
+   - Frontend: the cart context and state management, the `useBeverages` data-fetching hook, the `lib/` API layer (request handling, error mapping, response shaping), and a shared component.
+2. **Input validation on both sides.**
+   - The backend uses a global `ValidationPipe` (`whitelist`, `forbidNonWhitelisted`, `transform`) plus `class-validator` decorators on every DTO — UUIDs, enums, positive numbers, required strings, and nested array validation for order line items — including a custom validator that checks `customerContact` is a well-formed email or phone number, depending on the selected `contactMethod`.
+   - The frontend's customer-details form uses `react-hook-form` with `zod` for validation (name length, and phone or email format depending on the selected contact method).
+3. **State management.** `@tanstack/react-query` handles all server data (beverages, order submission), with proper loading, error, and refetch states. React Context (`CartProvider`) handles local cart state, shared across the ordering flow.
+4. **Containerization.** `server/Dockerfile` (a multi-stage build) and `server/docker-compose.yml` run the API and Postgres together, each with a health check.
+5. **Sequence diagram.** See the [Order Placement Flow](#order-placement-flow) section below.
 
 ## Order Placement Flow
 
