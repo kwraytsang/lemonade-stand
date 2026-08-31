@@ -31,7 +31,12 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
+!.env.example
+
+# local reference docs (not for git)
+docs/requirements.md
 
 # typescript
 *.tsbuildinfo
@@ -39,5 +44,5 @@ yarn-error.*
 example
 
 # generated native folders
-/ios
-/android
+client/ios
+client/android

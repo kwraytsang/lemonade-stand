@@ -1,0 +1,38 @@
+@import 'tailwindcss';
+@import 'uniwind';
+
+@theme {
+  --font-serif: Georgia, 'Times New Roman', serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New',
+    monospace;
+}
+
+@layer theme {
+  :root {
+    @variant light {
+      --color-background: #ffffff;
+      --color-background-element: #f0f0f3;
+      --color-background-selected: #e0e1e6;
+      --color-foreground: #000000;
+      --color-foreground-secondary: #60646c;
+      --color-border: #e5e5e5;
+      --color-destructive: #c4402f;
+      --color-link: #3c87f7;
+      --color-accent: #fed42e;
+      --color-accent-foreground: #1a1200;
+    }
+
+    @variant dark {
+      --color-background: #000000;
+      --color-background-element: #212225;
+      --color-background-selected: #2e3135;
+      --color-foreground: #ffffff;
+      --color-foreground-secondary: #b0b4ba;
+      --color-border: rgba(255, 255, 255, 0.14);
+      --color-destructive: #e37a6c;
+      --color-link: #3c87f7;
+      --color-accent: #fed42e;
+      --color-accent-foreground: #1a1200;
+    }
+  }
+}
