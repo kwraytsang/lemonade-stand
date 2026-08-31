@@ -266,7 +266,8 @@ sequenceDiagram
 
     API->>DB: Look up requested sizes by id (batched)
     DB-->>API: sizes (price, beverageTypeId)
-    API->>API: Validate each item's size belongs to its beverageType; compute totalPrice
+    API->>API: Validate each item's size belongs to its beverageType
+    API->>API: Compute totalPrice
 
     loop until unique, up to 5 attempts
         API->>DB: Check confirmationNumber unused for today
@@ -275,7 +276,7 @@ sequenceDiagram
 
     alt validation or lookup failed
         API-->>Client: 4xx { message }
-        Client-->>Customer: Show error toast; cart is preserved for retry
+        Client-->>Customer: Show error toast, cart is preserved for retry
     else success
         API->>DB: Insert order + order items
         DB-->>API: saved order
