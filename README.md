@@ -5,8 +5,6 @@ A mobile ordering app for a lemonade stand: customers browse beverages, build an
 - **`server/`** — NestJS + TypeORM + PostgreSQL API
 - **`client/`** — React Native (Expo) app
 
-(The original take-home prompt is kept locally as `docs/requirements.md` but is gitignored, so it isn't published in this repo.)
-
 ## Prerequisites
 
 - Node.js 22+
