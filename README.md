@@ -7,6 +7,11 @@ The project has two parts:
 - `server/`: an API that uses NestJS, TypeORM, and PostgreSQL.
 - `client/`: a React Native (Expo) app.
 
+
+## Demo Video
+
+https://github.com/user-attachments/assets/749c0d43-fc64-4fef-9618-1f990edf3447
+
 ## Prerequisites
 
 Before you start, make sure you have these tools:
@@ -304,8 +309,5 @@ sequenceDiagram
 ```
 
 
-## Demo Video
-
-https://github.com/user-attachments/assets/749c0d43-fc64-4fef-9618-1f990edf3447
 
 
