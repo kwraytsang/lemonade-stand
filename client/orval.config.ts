@@ -2,7 +2,13 @@ import { defineConfig } from 'orval';
 
 export default defineConfig({
   api: {
-    input: '../server/openapi.json',
+    input: {
+      target: '../server/openapi.json',
+      filters: {
+        mode: 'exclude',
+        tags: [/^admin\//],
+      },
+    },
     output: {
       mode: 'tags-split',
       target: 'src/lib/api/generated',

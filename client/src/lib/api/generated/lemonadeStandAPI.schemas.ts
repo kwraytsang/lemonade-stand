@@ -20,29 +20,13 @@ export interface BeverageType {
   sizes: BeverageSize[];
 }
 
-export interface CreateBeverageTypeDto {
-  name: string;
-  description?: string;
-}
+export type CreateOrderDtoContactMethod = typeof CreateOrderDtoContactMethod[keyof typeof CreateOrderDtoContactMethod];
 
-export interface UpdateBeverageTypeDto {
-  name?: string;
-  description?: string;
-}
 
-export interface CreateBeverageSizeDto {
-  label: string;
-  price: number;
-  /** Id of the beverage type this size belongs to */
-  beverageTypeId: string;
-}
-
-export interface UpdateBeverageSizeDto {
-  label?: string;
-  price?: number;
-  /** Id of the beverage type this size belongs to */
-  beverageTypeId?: string;
-}
+export const CreateOrderDtoContactMethod = {
+  phone: 'phone',
+  email: 'email',
+} as const;
 
 export interface CreateOrderItemDto {
   /** Id of the beverage type */
@@ -51,14 +35,6 @@ export interface CreateOrderItemDto {
   sizeId: string;
   quantity: number;
 }
-
-export type CreateOrderDtoContactMethod = typeof CreateOrderDtoContactMethod[keyof typeof CreateOrderDtoContactMethod];
-
-
-export const CreateOrderDtoContactMethod = {
-  phone: 'phone',
-  email: 'email',
-} as const;
 
 export interface CreateOrderDto {
   customerName: string;
