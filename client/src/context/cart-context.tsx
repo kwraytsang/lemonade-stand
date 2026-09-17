@@ -1,4 +1,3 @@
-import { useMutation } from '@tanstack/react-query';
 import {
   createContext,
   useCallback,
@@ -9,8 +8,9 @@ import {
   type ReactNode,
 } from 'react';
 
+import { useOrdersControllerCreate } from '@/lib/api/generated/customer-orders/customer-orders';
 import { ApiError } from '@/lib/api-error';
-import { submitOrder } from '@/lib/orders-api';
+import { toCreateOrderDto, type PlaceOrderInput } from '@/lib/orders-api';
 import { CartItem, ContactMethod } from '@/types/order';
 
 type CartContextValue = {
@@ -111,23 +111,23 @@ function cartItemsReducer(
   }
 }
 
-type PlaceOrderInput = Parameters<typeof submitOrder>[0];
-
 /** Wraps the submit-order mutation with the confirmation/error state the checkout flow needs. */
 function useOrderSubmission() {
   const [confirmationNumber, setConfirmationNumber] = useState<string | null>(
     null,
   );
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const mutation = useMutation({ mutationFn: submitOrder });
+  const mutation = useOrdersControllerCreate();
 
   const submit = useCallback(
     async (input: PlaceOrderInput) => {
       setSubmitError(null);
       try {
-        const result = await mutation.mutateAsync(input);
-        setConfirmationNumber(result.confirmationNumber);
-        return result.confirmationNumber;
+        const result = await mutation.mutateAsync({
+          data: toCreateOrderDto(input),
+        });
+        setConfirmationNumber(result.data.confirmationNumber);
+        return result.data.confirmationNumber;
       } catch (err) {
         setSubmitError(
           err instanceof ApiError

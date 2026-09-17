@@ -1,21 +1,7 @@
-import { apiClient } from './api-client';
+import type { BeverageType as ApiBeverageType } from './api/generated/lemonadeStandAPI.schemas';
 import { BeverageType } from '@/types/beverage';
 
-type RawBeverageSize = {
-  id: string;
-  label: string;
-  price: string;
-  beverageTypeId: string;
-};
-
-type RawBeverageType = {
-  id: string;
-  name: string;
-  description: string | null;
-  sizes: RawBeverageSize[];
-};
-
-function toBeverageType(raw: RawBeverageType): BeverageType {
+export function toBeverageType(raw: ApiBeverageType): BeverageType {
   return {
     id: raw.id,
     name: raw.name,
@@ -26,11 +12,4 @@ function toBeverageType(raw: RawBeverageType): BeverageType {
       price: Number(size.price),
     })),
   };
-}
-
-export async function fetchBeverageTypes(): Promise<BeverageType[]> {
-  const raw = await apiClient.get<RawBeverageType[]>(
-    '/customer/beverage-types',
-  );
-  return raw.map(toBeverageType);
 }

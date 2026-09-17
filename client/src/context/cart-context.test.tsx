@@ -2,13 +2,14 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { act, renderHook } from '@testing-library/react-native';
 
 import { CartProvider, useCart } from './cart-context';
-import { submitOrder } from '@/lib/orders-api';
+import { useOrdersControllerCreate } from '@/lib/api/generated/customer-orders/customer-orders';
 
-jest.mock('@/lib/orders-api', () => ({
-  submitOrder: jest.fn(),
+jest.mock('@/lib/api/generated/customer-orders/customer-orders', () => ({
+  useOrdersControllerCreate: jest.fn(),
 }));
 
-const mockedSubmitOrder = submitOrder as jest.Mock;
+const mockedUseOrdersControllerCreate = useOrdersControllerCreate as jest.Mock;
+const mockedMutateAsync = jest.fn();
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
@@ -30,7 +31,12 @@ const smallLemonade = {
 
 describe('CartProvider / useCart', () => {
   beforeEach(() => {
-    mockedSubmitOrder.mockReset();
+    mockedMutateAsync.mockReset();
+    mockedUseOrdersControllerCreate.mockReturnValue({
+      mutateAsync: mockedMutateAsync,
+      isPending: false,
+      reset: jest.fn(),
+    });
   });
 
   it('adds a new item to the cart', async () => {
@@ -100,7 +106,9 @@ describe('CartProvider / useCart', () => {
   });
 
   it('places an order successfully, storing the confirmation number and clearing the cart', async () => {
-    mockedSubmitOrder.mockResolvedValue({ confirmationNumber: 'LM-123456' });
+    mockedMutateAsync.mockResolvedValue({
+      data: { confirmationNumber: 'LM-123456' },
+    });
     const { result } = await renderHook(() => useCart(), { wrapper });
 
     await act(() => result.current.addItem(smallLemonade, 1));
@@ -120,7 +128,7 @@ describe('CartProvider / useCart', () => {
   });
 
   it('surfaces an error message when placing the order fails', async () => {
-    mockedSubmitOrder.mockRejectedValue(new Error('Network request failed'));
+    mockedMutateAsync.mockRejectedValue(new Error('Network request failed'));
     const { result } = await renderHook(() => useCart(), { wrapper });
 
     await act(() => result.current.addItem(smallLemonade, 1));

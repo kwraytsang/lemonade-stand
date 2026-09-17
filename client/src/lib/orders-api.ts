@@ -1,21 +1,15 @@
-import { apiClient } from './api-client';
+import type { CreateOrderDto } from './api/generated/lemonadeStandAPI.schemas';
 import { CartItem, ContactMethod } from '@/types/order';
 
-type SubmitOrderInput = {
+export type PlaceOrderInput = {
   customerName: string;
   contactMethod: ContactMethod;
   customerContact: string;
   items: CartItem[];
 };
 
-type SubmitOrderResponse = {
-  confirmationNumber: string;
-};
-
-export async function submitOrder(
-  input: SubmitOrderInput,
-): Promise<SubmitOrderResponse> {
-  return apiClient.post<SubmitOrderResponse>('/customer/orders', {
+export function toCreateOrderDto(input: PlaceOrderInput): CreateOrderDto {
+  return {
     customerName: input.customerName,
     contactMethod: input.contactMethod,
     customerContact: input.customerContact,
@@ -24,5 +18,5 @@ export async function submitOrder(
       sizeId: item.sizeId,
       quantity: item.quantity,
     })),
-  });
+  };
 }
