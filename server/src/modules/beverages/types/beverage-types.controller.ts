@@ -1,7 +1,8 @@
 import { Controller, Get, Param, ParseUUIDPipe } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 import { BeverageTypesService } from './beverage-types.service';
+import { BeverageType } from './entities/beverage-type.entity';
 
 @ApiTags('customer/beverage-types')
 @Controller('customer/beverage-types')
@@ -9,12 +10,14 @@ export class BeverageTypesController {
   constructor(private readonly beverageTypesService: BeverageTypesService) {}
 
   @Get()
-  findAll() {
+  @ApiOkResponse({ type: BeverageType, isArray: true })
+  findAll(): Promise<BeverageType[]> {
     return this.beverageTypesService.findAllOrderable();
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
+  @ApiOkResponse({ type: BeverageType })
+  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<BeverageType> {
     return this.beverageTypesService.findOne(id);
   }
 }
