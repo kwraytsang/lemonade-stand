@@ -1,16 +1,17 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMemo } from 'react';
 
+import { useBeverageTypesControllerFindAll } from '@/lib/api/generated/customer-beverage-types/customer-beverage-types';
 import { ApiError } from '@/lib/api-error';
-import { fetchBeverageTypes } from '@/lib/beverages-api';
+import { toBeverageType } from '@/lib/beverages-api';
 
 export function useBeverages() {
-  const { data, isPending, isRefetching, error, refetch } = useQuery({
-    queryKey: ['beverage-types'],
-    queryFn: fetchBeverageTypes,
-  });
+  const { data, isPending, isRefetching, error, refetch } =
+    useBeverageTypesControllerFindAll();
+
+  const beverages = useMemo(() => data?.data.map(toBeverageType) ?? [], [data]);
 
   return {
-    beverages: data ?? [],
+    beverages,
     loading: isPending,
     refreshing: isRefetching,
     error: error

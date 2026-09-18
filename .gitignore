@@ -41,6 +41,9 @@ docs/requirements.md
 # typescript
 *.tsbuildinfo
 
+# generated OpenAPI spec (regenerate with `npm run generate:openapi` in server/)
+server/openapi.json
+
 example
 
 # generated native folders
