@@ -6,7 +6,7 @@ export default defineConfig({
       target: '../server/openapi.json',
       filters: {
         mode: 'exclude',
-        tags: [/^admin\//],
+        tags: [/^admin\//, 'health'],
       },
     },
     output: {
