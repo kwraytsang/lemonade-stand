@@ -52,10 +52,6 @@ describe('CreateOrderDto', () => {
     expect(error?.constraints).toHaveProperty('isNotEmpty');
   });
 
-  // Whether `customerContact` actually looks like a valid email/phone number for
-  // the selected `contactMethod` is checked separately, by ZodValidationPipe +
-  // contactValidationSchema (see contact-validation.schema.spec.ts) — this DTO
-  // only owns "is a non-empty string".
 
   it('fails validation when items is an empty array', async () => {
     const errors = await validateDto({ ...validPayload, items: [] });
