@@ -38,9 +38,6 @@ describe('contactValidationSchema', () => {
     expect(result.success).toBe(false);
   });
 
-  // Regression case shared with the client's equivalent test
-  // (client/src/lib/details-schema.test.ts): this string contains an "@" but has
-  // no TLD, so it isn't a real email address.
   it('rejects an "@"-containing string that is not a real email address', () => {
     const result = contactValidationSchema.safeParse({
       contactMethod: ContactMethod.EMAIL,
