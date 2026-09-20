@@ -52,37 +52,10 @@ describe('CreateOrderDto', () => {
     expect(error?.constraints).toHaveProperty('isNotEmpty');
   });
 
-  it('fails validation when contactMethod is email and customerContact is not a valid email address', async () => {
-    const errors = await validateDto({
-      ...validPayload,
-      contactMethod: ContactMethod.EMAIL,
-      customerContact: 'not-an-email',
-    });
-
-    const error = errors.find((e) => e.property === 'customerContact');
-    expect(error?.constraints).toHaveProperty('matchesContactMethod');
-  });
-
-  it('passes validation when contactMethod is phone and customerContact has at least 7 digits', async () => {
-    const errors = await validateDto({
-      ...validPayload,
-      contactMethod: ContactMethod.PHONE,
-      customerContact: '(555) 123-4567',
-    });
-
-    expect(errors).toHaveLength(0);
-  });
-
-  it('fails validation when contactMethod is phone and customerContact has too few digits', async () => {
-    const errors = await validateDto({
-      ...validPayload,
-      contactMethod: ContactMethod.PHONE,
-      customerContact: '555-12',
-    });
-
-    const error = errors.find((e) => e.property === 'customerContact');
-    expect(error?.constraints).toHaveProperty('matchesContactMethod');
-  });
+  // Whether `customerContact` actually looks like a valid email/phone number for
+  // the selected `contactMethod` is checked separately, by ZodValidationPipe +
+  // contactValidationSchema (see contact-validation.schema.spec.ts) — this DTO
+  // only owns "is a non-empty string".
 
   it('fails validation when items is an empty array', async () => {
     const errors = await validateDto({ ...validPayload, items: [] });

@@ -116,6 +116,23 @@ describe('Orders (e2e)', () => {
         .expect(HttpStatus.BAD_REQUEST);
     });
 
+    it('rejects an email-formatted contactMethod with an invalid email address', async () => {
+      const response = await request(app.getHttpServer())
+        .post('/api/v1/customer/orders')
+        .send({
+          customerName: 'Jane Doe',
+          contactMethod: 'email',
+          customerContact: 'jane@example', // has "@" but no TLD — not a real email
+          items: [{ beverageTypeId, sizeId, quantity: 1 }],
+        })
+        .expect(HttpStatus.BAD_REQUEST);
+
+      const body = response.body as { message: string[] };
+      expect(body.message).toEqual(
+        expect.arrayContaining([expect.stringContaining('valid email')]),
+      );
+    });
+
     it('rejects a non-positive quantity', async () => {
       await request(app.getHttpServer())
         .post('/api/v1/customer/orders')
