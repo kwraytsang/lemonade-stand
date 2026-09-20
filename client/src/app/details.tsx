@@ -3,7 +3,6 @@ import { router } from 'expo-router';
 import { useEffect } from 'react';
 import { Controller, useForm, useWatch } from 'react-hook-form';
 import { Pressable, TextInput } from 'react-native';
-import { z } from 'zod';
 
 import { LoadingState } from '@/components/common/loading-state';
 import { PrimaryButton } from '@/components/common/primary-button';
@@ -11,32 +10,8 @@ import { ScreenLayout } from '@/components/common/screen-layout';
 import { ThemedText } from '@/components/common/themed-text';
 import { ThemedView } from '@/components/common/themed-view';
 import { useCart } from '@/context/cart-context';
+import { detailsSchema, type DetailsFormValues } from '@/lib/details-schema';
 import { ContactMethod } from '@/types/order';
-
-const detailsSchema = z
-  .object({
-    customerName: z.string().trim().min(2, 'Enter your name.'),
-    contactMethod: z.enum(['phone', 'email']),
-    customerContact: z.string(),
-  })
-  .superRefine((data, ctx) => {
-    const valid =
-      data.contactMethod === 'email'
-        ? data.customerContact.includes('@')
-        : data.customerContact.replace(/\D/g, '').length >= 7;
-    if (!valid) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['customerContact'],
-        message:
-          data.contactMethod === 'email'
-            ? 'Enter a valid email address.'
-            : 'Enter a valid phone number.',
-      });
-    }
-  });
-
-type DetailsFormValues = z.infer<typeof detailsSchema>;
 
 const inputClassName =
   'rounded-2xl border border-border px-4 py-4 text-base text-foreground';
