@@ -2,12 +2,7 @@ import { z } from 'zod';
 
 import { ContactMethod } from '../entities/order.entity';
 
-/**
- * Mirrors the client's equivalent schema (client/src/lib/details-schema.ts):
- * same zod `.email()` check for the email branch, same 7-digit minimum for the
- * phone branch. Keep the two in sync until this rule is derived from a single
- * shared source.
- */
+
 const MIN_PHONE_DIGITS = 7;
 const emailSchema = z.email();
 

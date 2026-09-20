@@ -1,10 +1,5 @@
 import { z } from 'zod';
 
-/**
- * Mirrors the server's contactValidationSchema (server/src/modules/orders/dto/contact-validation.schema.ts):
- * same zod `.email()` check for the email branch, same 7-digit minimum for the phone branch.
- * Keep the two in sync until this rule is derived from a single shared source.
- */
 const MIN_PHONE_DIGITS = 7;
 const emailSchema = z.email();
 

@@ -33,11 +33,7 @@ describe('detailsSchema', () => {
     expect(result.success).toBe(false);
   });
 
-  // Regression case: this string contains an "@" but isn't a real email address
-  // (no TLD). The old client check was `customerContact.includes('@')`, which
-  // let it through, while the server's `isEmail()` (server/src/modules/orders/dto/
-  // matches-contact-method.validator.ts) rejected it — a customer could pass this
-  // screen and only find out the order failed after reaching the review step.
+
   it('rejects an "@"-containing string that is not a real email address', () => {
     const result = detailsSchema.safeParse({
       ...basePayload,
