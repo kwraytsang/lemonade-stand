@@ -11,7 +11,6 @@ import {
 
 import { ContactMethod } from '../entities/order.entity';
 import { CreateOrderItemDto } from './create-order-item.dto';
-import { MatchesContactMethod } from './matches-contact-method.validator';
 
 export class CreateOrderDto {
   @ApiProperty({ example: 'Jane Doe' })
@@ -23,10 +22,10 @@ export class CreateOrderDto {
   @IsEnum(ContactMethod)
   contactMethod: ContactMethod;
 
+  /** Format (email vs. phone) is checked against `contactMethod` by ZodValidationPipe + contactValidationSchema, applied in OrdersController. */
   @ApiProperty({ example: 'jane@example.com' })
   @IsString()
   @IsNotEmpty()
-  @MatchesContactMethod()
   customerContact: string;
 
   @ApiProperty({ type: [CreateOrderItemDto] })
